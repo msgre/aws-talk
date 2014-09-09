@@ -1,0 +1,745 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+
+        <title>Jean-Cloude</title>
+
+        <meta name="description" content="Povídání o Amazon Web Services.">
+        <meta name="author" content="Michal Valoušek, michal@plovarna.cz">
+
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+        <link rel="stylesheet" href="css/reveal.min.css">
+        <link rel="stylesheet" href="css/theme/default.css" id="theme">
+
+        <!-- For syntax highlighting -->
+        <link rel="stylesheet" href="plugin/highlight/styles/github.css">
+
+        <style>
+
+.reveal section a:after {
+    content: " \2192";
+}
+.reveal section.noarrow a:after {
+    content: "";
+}
+
+
+.reveal section table {
+    margin-left:auto; 
+    margin-right:auto;
+}
+.reveal section table td {
+    padding:6px 18px;
+    margin:0;
+    border-bottom:1px dotted;
+}
+
+/* computing */
+.reveal section.computing * {
+    /*F58536*/
+    color: #271000;
+    border-color: #271000;
+}
+.reveal section.computing a {
+    color: #FFE5D2;
+}
+.reveal section.computing a:hover {
+    color: #FFF;
+}
+.reveal section.computing h2 {
+    color: #AA4803;
+}
+
+
+/* rds */
+.reveal section.rds * {
+    /*5293CF*/
+    color: #011D36;
+    border-color: #011D36;
+}
+.reveal section.rds a {
+    color: #AACFF0;
+}
+.reveal section.rds a:hover {
+    color: #FFF;
+}
+.reveal section.rds h2 {
+    color: #1262A9;
+}
+
+
+/* cf */
+.reveal section.cf * {
+    /*759C3D*/
+    color: #0F1A00;
+    border-color: #0F1A00;
+}
+.reveal section.cf a {
+    color: #CAE6A1;
+}
+.reveal section.cf a:hover {
+    color: #FFF;
+}
+.reveal section.cf h2 {
+    color: #365608;
+}
+
+/* cli */
+.reveal section.cli h2 {
+    color: #333;
+}
+
+
+
+.strikeout {
+    position: relative;
+}
+.strikeout::after {
+    border-bottom: 10px solid #000;
+    content: "";
+    left: 35%;
+    position: absolute;
+    right: 36%;
+    top: 60%;
+}
+
+            pre code {
+                font-size: 120%;
+            }
+            .no-highlight {
+                color:#777;
+                font-weight:bold;
+            }
+            .circle {
+                display:inline-block;
+                width:150px;
+                height:150px;
+                -webkit-border-radius:100px;
+                border-radius:100px;
+                background:black;
+                color:white;
+            }
+            .reveal pre {
+                box-shadow:none;
+                width:100%;
+            }
+            .reveal pre code {
+                padding-left:1em;
+                padding-right:1em;
+            }
+            .reveal .model pre code {
+                background-color: #CBEFF3;
+            }
+            .reveal .model a {
+                color: #CBEFF3;
+            }
+            .reveal .view pre code {
+                background-color: #FFE6B2;
+            }
+            .reveal .view a {
+                color: #FFE6B2;
+            }
+            .reveal .events pre code {
+                background-color: #A7F0B7;
+            }
+            .reveal .events a {
+                color: #A7F0B7;
+            }
+            .reveal .controller pre code {
+                background-color: #FFB6B2;
+            }
+            .reveal .controller a {
+                color: #FFB6B2;
+            }
+.reveal .controls div.navigate-left,
+.reveal .controls div.navigate-left.enabled {
+    border-right-color: #000;
+}
+.reveal .controls div.navigate-right,
+.reveal .controls div.navigate-right.enabled {
+    border-left-color: #000;
+}
+.reveal .controls div.navigate-up,
+.reveal .controls div.navigate-up.enabled {
+    border-bottom-color: #000;
+}
+.reveal .controls div.navigate-down,
+.reveal .controls div.navigate-down.enabled {
+    border-top-color: #000;
+}
+.reveal .progress span {
+    background: #000;
+}
+        </style>
+
+        <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+        <script>
+            if( window.location.search.match( /print-pdf/gi ) ) {
+                var link = document.createElement( 'link' );
+                link.rel = 'stylesheet';
+                link.type = 'text/css';
+                link.href = 'css/print/pdf.css';
+                document.getElementsByTagName( 'head' )[0].appendChild( link );
+            }
+        </script>
+
+        <!--[if lt IE 9]>
+        <script src="lib/js/html5shiv.js"></script>
+        <![endif]-->
+    </head>
+
+    <body>
+
+        <div class="reveal">
+
+            <!-- Any section element inside of this container is displayed as a slide -->
+            <div class="slides">
+                <section class="noarrow">
+                    <img src="img/aws-logo.png" style="padding-top:20px;border:none; box-shadow:none;" height="250" />
+                    <p>
+                        <br>
+                        <br>
+                        <small>Povídání pro <a href="http://tkalci.cz/">Tkalce na webu</a> &mdash; <a href="mailto:michal@plovarna.cz">Michal Valoušek</a> &mdash; <a href="http://twitter.com/msgre">@msgre</a><br><br>
+                            <a href="https://github.com/msgre/aws-talk">https://github.com/msgre/aws-talk</a>
+                        </small>
+                    </p>
+                </section>
+
+                <section class="noarrow">
+                    <q>
+                        "Cloud Computing", by definition, refers to the on-demand delivery of IT resources and applications via the Internet with pay-as-you-go pricing.
+                        <footer style="text-align:right">— <a href="http://aws.amazon.com/what-is-cloud-computing/">What is Cloud Computing?</a></footer>
+                    </q>
+                </section>
+
+                <section>
+                    <img src="img/sluzby.png" style="border:none; padding:20px; background: #fff; box-shadow:none;" height="500" />
+                </section>
+
+                <section>
+                    <img src="img/sluzby2.png" style="border:none; padding:20px; background: #fff; box-shadow:none;" height="500" />
+                </section>
+
+                <section>
+                    <h2>Jak provozujete svou webovou aplikaci?</h2>
+                    <aside class="notes">
+                        <p>
+                            * technologie<br>
+                            * prostredi (webhosting, virtual, pronajaty server) + jak pripravujete podhoubi pro svou appku<br>
+                            * jak dostavate svuj kod na server<br>
+                        </p>
+                    </aside>
+                </section>
+
+<!-- EC2 uvod -->
+                <section data-background="#F58536" class="computing">
+                    <h1>EC2</h1>
+                    <br>
+                    <h3>Elastic Cloud Computing</h3>
+                    <aside class="notes">
+                        <p>
+                        * spustena v roce 2006<br>
+                        * vetsina sluzeb neni cilena na koncaky, ale spis na vyvojare, kteri na AWS podvozku realizuji sve aplikace<br>
+                        </p>
+                    </aside>
+                </section>
+
+    <!-- Typy instanci -->
+                <section data-background="#F58536" class="computing">
+                    <h2>EC2</h2><br>
+                    <h3>Typy instancí</h3>
+                    <br>
+                    <ul>
+                        <li>General Purpose</li>
+                        <li>Compute Optimized</li>
+                        <li>Memory Optimized</li>
+                        <li>Storage Optimized</li>
+                        <li>GPU Instances</li>
+                    </ul>
+                    <p><br><a href="http://aws.amazon.com/ec2/instance-types/">Kompletní přehled</a></p>
+                    <aside class="notes">
+                        <p>
+                            * neustale to modernizuji (current vs previous generations)<br>
+                            * EC2 Compute Unit (relative measure of the integer processing power of an Amazon EC2 instance)<br>
+                        </p>
+                    </aside>
+                </section>
+
+    <!-- Operacni system -->
+                <section data-background="#F58536" class="computing">
+                    <h2>EC2</h2><br>
+                    <h3>Operační systém</h3>
+                    <br>
+                    <ul>
+                        <li>Amazon Linux</li>
+                        <li>Red Hat Linux</li>
+                        <li>Ubuntu Server</li>
+                        <li>Debian Linux</li>
+                        <li>Windows Server</li>
+                    </ul>
+                    <p><br><a href="https://aws.amazon.com/marketplace">Marketplace</a></p>
+                    <aside class="notes">
+                        <p>
+                        * 32/64 bitove verze<br>
+                        * bacha! spolu se systemem uz je zuzen vyber sily stroju, typ root disku, apod<br>
+                        * fakturace za images z marketplace (priplatek k provozu, mesicni fee, apod)<br>
+                        </p>
+                    </aside>
+                </section>
+
+    <!-- Fakturace -->
+                <section data-background="#F58536" class="computing">
+                    <h2>EC2</h2><br>
+                    <h3>Fakturace</h3>
+                    <br>
+                    <p>Platí se za hodinu provozu</p>
+                    <br>
+                    <ul>
+                        <li>On-Demand</li>
+                        <li>Reserved</li>
+                        <li>Spot instances</li>
+                    </ul>
+                </section>
+
+                <section data-background="#F58536" class="computing">
+                    <h2>EC2</h2><br>
+                    <h3>Hodina provozu instance m3.medium</h3>
+                    <br>
+                    <table>
+                        <tr>
+                            <td>On-Demand</td>
+                            <td>1.65 Kč</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Reserved</td>
+                            <td>1.35 Kč</td>
+                            <td><small style="padding-top:5%;">3-letá předplacenka</small></td>
+                        </tr>
+                        <tr>
+                            <td>Spot instances</td>
+                            <td style="text-align:right">0.22 Kč</td>
+                            <td></td>
+                        </tr>
+                    </table>
+                    <p><br><a href="http://aws.amazon.com/ec2/pricing/">Kompletní ceník</a></p>
+                </section>
+
+<!-- EC2 demo -->
+
+                <section data-background="#F58536" class="computing">
+                    <h2>EC2</h2><br>
+                    <h1><a href="https://eu-west-1.console.aws.amazon.com/ec2/v2/home">Dömo</a></h1>
+                </section>
+
+<!-- EC2 detaily -->
+
+                <section data-background="#F58536" class="computing">
+                    <h2>EC2</h2><br>
+                    <h3>Regiony, zóny</h3>
+                    <br>
+                    <img src="img/awsmap.png" style="border:none; box-shadow:none;" height="400" />
+                </section>
+
+    <!-- Disky -->
+                <section data-background="#F58536" class="computing">
+                    <h2>EC2</h2><br>
+                    <h3>Disky</h3>
+                    <br>
+                    <ul>
+                        <li>Instance store</li>
+                        <li>EBS (Elastic block store)</li>
+                    </ul>
+                </section>
+
+                <section data-background="#F58536" class="computing">
+                    <h2>EC2</h2><br>
+                    <h3>Disky &ndash; Instance store</h3>
+                    <br>
+                    <ul>
+                        <li>disk přímo na serveru</li>
+                        <li>nejde měnit jeho parametry</li>
+                        <li>nejsou persistentní</li>
+                        <li>start systému do 5 minut</li>
+                    </ul>
+                </section>
+
+                <section data-background="#F58536" class="computing">
+                    <h2>EC2</h2><br>
+                    <h3>Disky &ndash; EBS</h3>
+                    <br>
+                    <ul>
+                        <li>síťové disky</li>
+                        <li>parametrizovatelné (velikost, typ, IOPS)</li>
+                        <li>persistentní</li>
+                        <li>start systému do 1 minuty</li>
+                    </ul>
+                </section>
+
+                <section data-background="#F58536" class="computing">
+                    <h2>EC2</h2><br>
+                    <h2><a href="https://eu-west-1.console.aws.amazon.com/ec2/v2/home">Dömo</a></h2>
+                </section>
+
+    <!-- AMI -->
+                <section data-background="#F58536" class="computing">
+                    <h2>EC2</h2><br>
+                    <h3>AMI &ndash; Amazon Machine Images</h3>
+                    <br>
+                    <ul>
+                        <li>Operační systém</li>
+                        <li>Architektura (32/64 bit)</li>
+                        <li>Typ virtualizace (PV/HVM)</li>
+                        <li>Root disk</li>
+                        <li>Region</li>
+                        <li>Launch permissions</li>
+                    </ul>
+                    <p><br><a href="https://eu-west-1.console.aws.amazon.com/ec2/v2/home#LaunchInstanceWizard:">Volba AMI při startu instance</a></p>
+                </section>
+
+    <!-- Zivotni cykly -->
+                <section data-background="#F58536" class="computing">
+                    <h2>EC2</h2><br>
+                    <h3>Životní cyklus instance</h3>
+                    <img src="img/instance_lifecycle.png" style="border:none; padding:20px; background: #fff; box-shadow:none;" height="400" />
+                </section>
+
+                <section data-background="#F58536" class="computing">
+                    <h2>EC2</h2><br>
+                    <h3>Životní cyklus instance &ndash; Zvláštnosti</h3><br>
+                    <ul>
+                        <li>Start/Stop mění IP adresy i hostname</li>
+                        <li>Reboot ponechává instanci na stejném železe</li>
+                        <li>I za vypnutý stroj se platí (EBS)</li>
+                    </ul>
+                    <p><br><a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-lifecycle.html">Podrobnosti</a></p>
+
+                    <aside class="notes">
+                        <p>
+- noisy neighbors<br>
+- netflix<br>
+    --- chaos monkey/gorilla/king kong<br>
+    --- wrapper nad kazdou AWS sluzbou, do kterych cas od casu zamerne vkladaji chyby a testuji jak se s tim system vyrovna<br>
+                        </p>
+                    </aside>
+                </section>
+
+                <section data-background="http://www.mayfly.org/wordpress/wp-content/uploads/Mayfly.jpg">
+                    <h1>Jepice!</h1>
+                </section>
+    <!-- Elastic IP -->
+                <section data-background="#F58536" class="computing">
+                    <h2>EC2</h2><br>
+                    <h3>Elastic IP</h3><br>
+                    <ul>
+                        <li>Až 5 fixních IP přiřazených k AWS účtu</li>
+                        <li>Zdarma, pokud je EIP přiřazena k instanci</li>
+                        <li>Využití pro load balancery, IoT, apod.</li>
+                    </ul>
+                </section>
+
+    <!-- ELB -->
+                <section data-background="#F58536" class="computing">
+                    <h2>EC2</h2><br>
+                    <h3>ELB &ndash; Elastic Load Balancer</h3>
+                    <img src="img/lb.png" style="border:none; padding:20px; background: #fff; box-shadow:none;" height="400" />
+                    <p><a href="https://eu-west-1.console.aws.amazon.com/ec2/v2/home#LoadBalancers:">Dömo</a></p>
+                    <aside class="notes">
+                        <p>
+                        * bacha: k ELB nejde pripnout elastic IP (LB dostane vygenerovany hostname)<br>
+                        * v kombinaci s route53 to pak muzu priradit nejake peknejsi domene<br>
+                        </p>
+                    </aside>
+                </section>
+
+    <!-- Autoscaling group -->
+                <section data-background="#F58536" class="computing">
+                    <h2>EC2</h2><br>
+                    <h3>Automatické škálování</h3><br>
+                    <ul>
+                        <li>
+                            <a href="https://eu-west-1.console.aws.amazon.com/ec2/autoscaling/home#LaunchConfigurations:">Launch Configuration</a><br>
+                            Parametry stroje, který se má automaticky nahazovat
+                        </li>
+                        <li>
+                            <a href="https://eu-west-1.console.aws.amazon.com/ec2/autoscaling/home#AutoScalingGroups:">Auto Scaling groups</a><br>
+                            Parametry autoškálování (limity, podmínky)
+                        </li>
+                    </ul>
+                    <aside class="notes">
+                        <p>
+                        * vratit se k predchozimu obrazku, vysvetlit autoskalovani na nem<br>
+                        * skvela vec v kombinaci s LB<br>
+                        * bacha! stateless systemy!<br>
+                        * fixed number, manual, dynamic, scheduled<br>
+                        </p>
+                    </aside>
+                </section>
+
+    <!-- Security groups -->
+                <section data-background="#F58536" class="computing">
+                    <h2>EC2</h2><br>
+                    <h3>Security groups</h3><br>
+                    <ul>
+                        <li>Každá EC2 instance je zařazena minimálně do defaultní SG</li>
+                        <li>Firewall pravidla<ul>
+                            <li>Protokol &ndash; TCP, UDP, ICMP</li>
+                            <li>Port &ndash; jeden konkrétní nebo rozsah</li>
+                            <li>Zdroj &ndash; odkudkoliv, z konkrétní IP, z jiné SG</li>
+                        </li>
+                    </ul>
+                    <aside class="notes">
+                        <p>
+                        * Firewall - pravidla pro in/out traffic<br>
+                        * rikam jak je to v ec2 classic, vpc<br>
+                        * u bezici instance se set SG uz neda menit; daji se ale menit samotna pravidla v grupach<br>
+                        </p>
+                    </aside>
+                </section>
+
+<!-- RDS -->
+                <section data-background="#5293CF" class="rds">
+                    <h1>RDS</h1><br>
+                    <h2>Relational Database Service</h2>
+                </section>
+
+                <section data-background="#5293CF" class="rds">
+                    <h2>RDS</h2><br>
+                    <h3>Podporované databáze</h3><br>
+                    <ul>
+                        <li>MySQL</li>
+                        <li>Oracle</li>
+                        <li>Microsoft SQL Server</li>
+                        <li>PostgreSQL</li>
+                    </ul>
+                    <aside class="notes">
+                        <p>
+                            * az 3 TB dat (mysql, postgresql, oracle)<br>
+                            * specifika: mysql podporuje read repliky, postgresql rozsireni (postgis, hstore, fulltext..)<br>
+                            * u kazde db je mozne specifikovat DB parametry (mysql s default svedskym kodovanim)<br>
+                        </p>
+                    </aside>
+                </section>
+
+                <section data-background="#5293CF" class="rds">
+                    <h2>RDS</h2><br>
+                    <h3>Fakturace</h3><br>
+
+                    <p>Platí se za hodinu provozu, I/O operace, objem dat</p>
+                    <br>
+                    <ul>
+                        <li>On-Demand</li>
+                        <li>Reserved</li>
+                    </ul>
+
+                    <aside class="notes">
+                        <p>
+                            * db.m3.medium o cca 5.000 Kc/rocne draz ve srovnani s EC2 instanci<br>
+                            * bacha! bez poplatku za IO operace a okupovane misto<br>
+                        </p>
+                    </aside>
+                </section>
+
+<!-- ElastiCache -->
+
+                <section data-background="#5293CF" class="rds">
+                    <h1>ElastiCache</h1>
+                </section>
+
+                <section data-background="#5293CF" class="rds">
+                    <h2>ElastiCache</h2><br>
+                    <h3>Podporované technologie</h3><br>
+                    <ul>
+                        <li>Memcached</li>
+                        <li>Redis</li>
+                    </ul>
+                </section>
+
+                <section data-background="#5293CF" class="rds">
+                    <h2>ElastiCache</h2><br>
+                    <h3>Fakturace</h3><br>
+
+                    <p>Platí se za hodinu provozu <sup>*</sup></p>
+                    <br>
+                    <ul>
+                        <li>On-Demand</li>
+                        <li>Reserved</li>
+                    </ul>
+
+                    <aside class="notes">
+                        <p>
+                            * data transfer ve stejne zone zdarma, mimo zonu za nejake drobne<br>
+                            * jedna zaloha je free, dalsi jsou zpoplatneny X za GB/mesic <br>
+                        </p>
+                    </aside>
+                </section>
+
+<!-- Route53 -->
+
+                <section data-background="#F58536" class="computing">
+                    <h1>Route53</h1>
+                </section>
+
+                <section data-background="#F58536" class="computing">
+                    <h2>Route53</h2><br>
+                    <ul>
+                        <li>Registrace domén (Gandi)</li>
+                        <li>DNS</li>
+                        <li>Health checks</li>
+                    </ul>
+
+                    <aside class="notes">
+                        <p>
+                            Amazon Route 53 is designed to propagate updates
+                            you make to your DNS records to its world-wide
+                            network of authoritative DNS servers within 60
+                            seconds under normal conditions. A change is
+                            successfully propagated world-wide when the API
+                            call returns an INSYNC status listing.
+                        </p>
+                    </aside>
+                </section>
+
+                <section data-background="#F58536" class="computing">
+                    <h2>Route53</h2><br>
+                    <h3>DNS</h3><br>
+                    <ul>
+                        <li>propagace změn do 60 vteřin</li>
+                        <li>Záznamy &ndash; A, AAAA, CNAME, MX, NS, PTR, SOA, SPF, SRV, TXT</li>
+                        <li>Aliasy &ndash; přímé propojení na vybrané služby AWS</li>
+                        <li>Routování &ndash; simple, weightened, latency based, failover, geolocation</li>
+                    </ul>
+
+                    <aside class="notes">
+                        <p>
+                            Tip: David Pavlik doporucuje vzdycky vyuzivat CNAME namisto IP adres
+                        </p>
+                    </aside>
+                </section>
+
+<!-- CloudFormation -->
+
+                <section data-background="#759C3D" class="cf">
+                    <h1>CloudFormation</h1>
+                </section>
+
+                <section data-background="#759C3D" class="cf">
+                    <h2>CloudFormation</h2><br>
+                    <ul>
+                        <li>JSON šablona</li>
+                        <li>Zdroje AWSka (EC2 mašiny, RDS databáze, LB, ...) a vztahy mezi nimi</li>
+                        <li>Parametry získané od uživatele</li>
+                        <li>Pomocné struktury</li>
+                    </ul>
+                    <p><br><a href="https://s3-eu-west-1.amazonaws.com/cloudformation-templates-eu-west-1/WordPress_Single_Instance.template">Ukázka</a></p>
+                </section>
+
+                <section data-background="#759C3D" class="cf">
+                    <h2>CloudFormation</h2><br>
+                    <h3>Podporované objekty</h3><br>
+
+                    <p>Auto&nbsp;Scaling, Amazon&nbsp;CloudFront, AWS&nbsp;CloudWatch, Amazon&nbsp;DynamoDB, Amazon&nbsp;EC2, Amazon&nbsp;ElastiCache, AWS&nbsp;Elastic&nbsp;Beanstalk, AWS&nbsp;Elastic&nbsp;Load&nbsp;Balancing, AWS&nbsp;Identity&nbsp;and&nbsp;Access&nbsp;Management, Amazon&nbsp;RDS, Amazon&nbsp;Redshift, Amazon&nbsp;Route&nbsp;53, Amazon&nbsp;S3, Amazon&nbsp;SimpleDB, Amazon&nbsp;SNS, Amazon&nbsp;SQS, Amazon&nbsp;VPC</p>
+
+                </section>
+
+
+                <section data-background="#759C3D" class="cf">
+                    <h2>CloudFormation</h2><br>
+                    <img src="img/cf.png" style="border:none; padding:20px; background: #fff; box-shadow:none;" height="400" />
+                </section>
+
+<!-- AWS CLI -->
+
+                <section>
+                    <h2>CLI &ndash; Command Line Interface</h2>
+                </section>
+
+                <section class="cli">
+                    <h3>CLI &ndash; Command Line Interface</h3><br>
+                    <pre class="bash"><code>
+$ aws ec2 describe-instances
+
+{
+    "Reservations": [
+        {
+            "Instances": [
+                {
+                    "Monitoring": {
+                        "State": "disabled"
+                    },
+                    "PublicDnsName": null,
+                    "State": {
+                        "Code": 80,
+                        "Name": "stopped"
+                    },
+                    ...
+                    </code></pre>
+                </section>
+
+
+                <section>
+                    <h2>Tipy</h2><br>
+                    <ul>
+                        <li>Store no application state on your servers</li>
+                        <li>Disable SSH access to all servers</li>
+                        <li>Servers are ephemeral, you don't care about them. You only care about the service as a whole</li>
+                        <li>Automate everything</li>
+                        <li>Use tags!</li>
+                        <li>Use reserved instances to save big $$$</li>
+                        <li>Scale horizontally</li>
+                        <li>Your application may require changes to work on AWS</li>
+                        <li>Make sure AWS is right for your workload</li>
+                    </ul>
+                    <p><br><a href="https://wblinks.com/notes/aws-tips-i-wish-id-known-before-i-started/">AWS Tips I Wish I'd Known Before I Started</a></p>
+                </section>
+
+
+                <section>
+                    <h3>Díky za pozornost</h3>
+                </section>
+            </div>
+
+        </div>
+
+        <script src="lib/js/head.min.js"></script>
+        <script src="js/reveal.min.js"></script>
+        <script src="jquery.min.js"></script>
+
+        <script>
+
+            // Full list of configuration options available here:
+            // https://github.com/hakimel/reveal.js#configuration
+            Reveal.initialize({
+                controls: true,
+                progress: true,
+                history: true,
+                center: true,
+
+                theme: 'simple',
+                transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
+
+                dependencies: [
+                    { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+                    { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'plugin/highlight/highlight.js', async: true, callback: function() {
+                        $(document).ready(function(){
+                            $('code').each(function(i, e) {hljs.highlightBlock(e)});
+                        });
+                        //hljs.initHighlightingOnLoad();
+                    } },
+                    { src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+                    { src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+                ]
+            });
+
+        </script>
+
+    </body>
+</html>
